@@ -13,6 +13,9 @@ export function SiteHeader() {
           <Link href="/#how-it-works" className="hidden rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:text-brand-700 sm:block">
             How it works
           </Link>
+          <Link href="/#prepare" className="hidden rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:text-brand-700 sm:block">
+            CSV guide
+          </Link>
           <Link href="/#features" className="hidden rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:text-brand-700 sm:block">
             Features
           </Link>

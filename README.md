@@ -8,6 +8,41 @@ The decision-making "brain" is plain, readable Python rules. **No AI model decid
 See [DESIGN.md](DESIGN.md) for how it decides and [AI_USAGE.md](AI_USAGE.md) for how AI tools were used to write it.
 The assessment brief is in [TASK.md](TASK.md).
 
+## Screenshots
+
+**Landing page: header and hero**
+
+![Landing page header and hero](docs/screenshots/01-landing-header-hero.png)
+
+**The app: rows that need review.** A sample bank statement after upload: totals at the top, the unsure rows with the
+reason and a suggested category, and totals by category on the right.
+
+![Needs review tab](docs/screenshots/02-app-needs-review.png)
+
+**The app: all transactions**, each with its category, the rule that decided it and how sure it is.
+
+![All transactions tab](docs/screenshots/03-app-all-transactions.png)
+
+**How it works**
+
+![How it works](docs/screenshots/04-how-it-works.png)
+
+**The brain: six rule layers**
+
+![The brain's six rule layers](docs/screenshots/05-the-brain.png)
+
+**Features**
+
+![Features and tricky rows](docs/screenshots/06-features.png)
+
+**CSV guide**
+
+![How to prepare your CSV](docs/screenshots/07-csv-guide.png)
+
+**Footer**
+
+![Footer](docs/screenshots/08-footer.png)
+
 ## Project structure
 
 ```

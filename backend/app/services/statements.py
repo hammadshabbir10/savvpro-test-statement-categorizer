@@ -72,10 +72,12 @@ def summarize(items: list[dict]) -> dict:
     totals: dict[str, Decimal] = defaultdict(Decimal)
     for it in items:
         amount = Decimal(it["amount"])
+        totals[it["category"]] += abs(amount)
         if it["category"] == "Refund" and it["refund_of"]:
-            totals[it["refund_of"]] -= amount  # nets the purchase
-        else:
-            totals[it["category"]] += abs(amount)
+            # Shown under Refund for visibility, and subtracted from the
+            # purchase category. Refund is not income or a deductible, so it
+            # is never counted twice in the headline totals.
+            totals[it["refund_of"]] -= amount
     by_category = [
         {
             "category": name,

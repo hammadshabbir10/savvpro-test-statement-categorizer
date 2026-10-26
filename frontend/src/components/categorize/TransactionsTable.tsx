@@ -28,7 +28,9 @@ export function TransactionsTable({
 }) {
   const reviewCount = transactions.filter((t) => t.category === NEEDS_REVIEW).length;
   const [tab, setTab] = useState<Tab>(reviewCount ? "review" : "all");
-  const rows = tab === "review" ? transactions.filter((t) => t.category === NEEDS_REVIEW) : transactions;
+  // Newest first, whatever order the bank exported them in.
+  const sorted = [...transactions].sort((a, b) => b.date.localeCompare(a.date) || a.row - b.row);
+  const rows = tab === "review" ? sorted.filter((t) => t.category === NEEDS_REVIEW) : sorted;
 
   return (
     <div className="overflow-hidden rounded-2xl bg-white shadow-card ring-1 ring-brand-100">

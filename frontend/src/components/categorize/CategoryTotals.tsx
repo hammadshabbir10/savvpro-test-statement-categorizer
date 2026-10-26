@@ -23,6 +23,7 @@ export function CategoryTotals({ totals }: { totals: CategoryTotal[] }) {
               <p className="font-medium text-slate-800">{t.category}</p>
               <p className="text-xs text-slate-500">
                 {KIND_LABEL[t.kind]} · {t.count} {t.count === 1 ? "row" : "rows"}
+                {t.kind === "refund" && " · already subtracted from the purchase category"}
               </p>
             </div>
             <div className="flex items-center gap-2">

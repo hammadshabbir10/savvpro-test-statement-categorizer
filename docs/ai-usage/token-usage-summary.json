@@ -5,9 +5,13 @@
   "models": [
     "claude-opus-5-5"
   ],
-  "input_tokens": 140,
-  "output_tokens": 119468,
-  "cache_creation_input_tokens": 817886,
-  "cache_read_input_tokens": 51004562,
-  "total_tokens": 51942056
+  "task_tokens": {
+    "output_tokens": 119468,
+    "cache_creation_input_tokens": 817886,
+    "input_tokens": 140,
+    "total": 937494
+  },
+  "excluded_earlier_session_context": {
+    "cache_read_input_tokens": 51004562
+  }
 }

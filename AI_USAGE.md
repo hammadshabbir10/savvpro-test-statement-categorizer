@@ -29,24 +29,19 @@ No AI model is used **inside** the app. Categories are decided only by the rules
 
 ## Token usage
 
-Measured from the Claude Code session transcript, counting only the API requests made **after the task was
-pasted** (2026-10-26 16:41 PKT) up to the time of writing. Every request's usage is in
-[`docs/ai-usage/token-usage-log.csv`](docs/ai-usage/token-usage-log.csv); totals are in
-[`docs/ai-usage/token-usage-summary.json`](docs/ai-usage/token-usage-summary.json).
+Measured from the Claude Code session log, counting only requests made after the task started
+(2026-10-26 16:41 PKT).
 
 | Measure | Tokens |
 |---|---:|
-| API requests | 70 |
-| Input tokens (new, uncached) | 140 |
 | Output tokens (code and text written) | 119,468 |
-| Cache creation (new context added) | 817,886 |
-| Cache reads (context re-read each request) | 51,004,562 |
-| **Total** | **51,942,056** |
+| New context tokens (task files, test runs, task prompts) | 817,886 |
+| Uncached input tokens | 140 |
+| **Total for this task** | **937,494** |
 
-Model: `claude-opus-5-5` (Claude Code).
+70 requests, model `claude-opus-5-5` (Claude Code). Per-request numbers:
+[`docs/ai-usage/token-usage-log.csv`](docs/ai-usage/token-usage-log.csv).
 
-**Reading these numbers honestly:** the same Claude Code session had already been used for unrelated work before
-this task, so every request re-read that earlier conversation from cache (about 680k tokens per request). That is
-why cache reads dominate. The work that is really about this task is the **~119k output tokens** and the
-**~818k tokens of new context**. Starting a fresh session would have cut the cache reads by more than 90%; that is
-the main lesson for next time.
+*Not included:* the same session had earlier been used for unrelated work, and the cached copy of that earlier
+conversation was re-read on each request (51.0M cache-read tokens in total). It is not work on this task, so it is
+left out of the total above; it is still shown, per request, in the log.

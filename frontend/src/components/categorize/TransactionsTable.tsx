@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { money, percent, shortDate } from "@/lib/format";
@@ -27,7 +27,18 @@ export function TransactionsTable({
   onFix: (id: number, category: string, applyToSimilar: boolean) => Promise<void>;
 }) {
   const reviewCount = transactions.filter((t) => t.category === NEEDS_REVIEW).length;
-  const [tab, setTab] = useState<Tab>(reviewCount ? "review" : "all");
+  const [tab, setTabState] = useState<Tab>(reviewCount ? "review" : "all");
+  // The open tab lives in the address bar too, so a refresh keeps it.
+  useEffect(() => {
+    const saved = new URLSearchParams(window.location.search).get("view");
+    if (saved === "review" || saved === "all") setTabState(saved);
+  }, []);
+  const setTab = (t: Tab) => {
+    setTabState(t);
+    const url = new URL(window.location.href);
+    url.searchParams.set("view", t);
+    window.history.replaceState(null, "", url);
+  };
   // Newest first, whatever order the bank exported them in.
   const sorted = [...transactions].sort((a, b) => b.date.localeCompare(a.date) || a.row - b.row);
   const rows = tab === "review" ? sorted.filter((t) => t.category === NEEDS_REVIEW) : sorted;

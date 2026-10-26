@@ -78,6 +78,12 @@ def test_review_keeps_a_suggestion():
 
 
 def test_learned_rule_wins():
-    d = decide("JOES CAFE 0412", "-11.40", learned={"JOES CAFE": "Driver Supplies"})
+    d = decide("JOES CAFE 0412", "-11.40", learned={"OUT:JOES CAFE": "Driver Supplies"})
     assert d.category == "Driver Supplies"
     assert d.rule == "learned"
+
+
+def test_learned_rule_only_applies_in_the_same_direction():
+    learned = {"OUT:EXXONMOBIL": "Transfer"}
+    assert decide("EXXONMOBIL 4471", "-52.10", learned).category == "Transfer"
+    assert decide("EXXONMOBIL 4471", "52.10", learned).category == "Refund"

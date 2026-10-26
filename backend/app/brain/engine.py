@@ -53,14 +53,20 @@ def _is_platform(text: str) -> str | None:
     return None
 
 
+def learned_key(merchant: str, amount: Decimal) -> str:
+    return f"{'IN' if amount > 0 else 'OUT'}:{merchant}"
+
+
 def categorize(description: str, amount: Decimal, learned: dict[str, str] | None = None) -> Decision:
     text = clean(description)
     key = merchant_key(description)
     money_in = amount > 0
 
     # 1. The user's own fixes beat every built-in rule.
-    if learned and key in learned:
-        return Decision(learned[key], 0.97, f"You filed '{key}' as {learned[key]} before", "learned")
+    # Keyed by direction too: filing a purchase never re-files a refund.
+    lkey = learned_key(key, amount)
+    if learned and lkey in learned:
+        return Decision(learned[lkey], 0.97, f"You filed '{key}' as {learned[lkey]} before", "learned")
 
     # 2. Moving money around is not spending or income.
     if rules.CARD_PAYMENT.search(text):

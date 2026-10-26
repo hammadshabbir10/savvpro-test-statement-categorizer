@@ -7,8 +7,18 @@ import { TransactionsTable } from "@/components/categorize/TransactionsTable";
 import { UploadPanel } from "@/components/categorize/UploadPanel";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { exportUrl, fixTransaction, getCategories, uploadStatement } from "@/lib/api";
+import { exportUrl, fixTransaction, getCategories, getStatement, uploadStatement } from "@/lib/api";
 import type { Category, StatementResult } from "@/lib/types";
+
+function setUrl(statementId: number | null) {
+  const url = new URL(window.location.href);
+  if (statementId) url.searchParams.set("statement", String(statementId));
+  else {
+    url.searchParams.delete("statement");
+    url.searchParams.delete("view");
+  }
+  window.history.replaceState(null, "", url);
+}
 
 export default function CategorizePage() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -18,13 +28,27 @@ export default function CategorizePage() {
 
   useEffect(() => {
     getCategories().then(setCategories).catch((e: Error) => setError(e.message));
+    // Reopen the statement in the address bar, so a refresh keeps your place.
+    const id = Number(new URLSearchParams(window.location.search).get("statement"));
+    if (id) {
+      setBusy(true);
+      getStatement(id)
+        .then(setResult)
+        .catch(() => setUrl(null))
+        .finally(() => setBusy(false));
+    }
   }, []);
+
+  const show = (data: StatementResult | null) => {
+    setResult(data);
+    setUrl(data?.statement.id ?? null);
+  };
 
   const upload = async (file: File, sign: "auto" | "bank" | "card") => {
     setBusy(true);
     setError(null);
     try {
-      setResult(await uploadStatement(file, sign));
+      show(await uploadStatement(file, sign));
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -54,7 +78,7 @@ export default function CategorizePage() {
           </div>
           {result && (
             <div className="flex flex-wrap gap-2">
-              <Button variant="secondary" onClick={() => setResult(null)}>
+              <Button variant="secondary" onClick={() => show(null)}>
                 Upload another
               </Button>
               <a

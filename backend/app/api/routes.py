@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import csv
 import io
+from decimal import Decimal
 
 from fastapi import APIRouter, File, HTTPException, Query, UploadFile
 from fastapi.responses import Response, StreamingResponse
 from pydantic import BaseModel
 
+from app.brain.engine import learned_key
 from app.domain.categories import CATEGORIES, NEEDS_REVIEW, is_deductible
 from app.ingest.parsing import StatementError, parse_csv
 from app.services.statements import categorize_statement, link_refunds, summarize
@@ -87,7 +89,7 @@ def fix(transaction_id: int, body: Fix) -> dict:
     target = next(it for it in items if it["id"] == transaction_id)
     changed: dict[int, dict] = {}
     for it in items:
-        same = it["merchant"] and it["merchant"] == target["merchant"]
+        same = bool(it["merchant"]) and it["merchant"] == target["merchant"] and (Decimal(it["amount"]) > 0) == (Decimal(target["amount"]) > 0)
         if it["id"] == transaction_id or (body.apply_to_similar and same and it["category"] == NEEDS_REVIEW):
             it.update(category=body.category, confidence=1.0, rule="user", suggestion=None,
                       reason="Set by you" if it["id"] == transaction_id else f"Same merchant as a row you fixed")
@@ -96,7 +98,7 @@ def fix(transaction_id: int, body: Fix) -> dict:
     changed.update({it["id"]: it for it in items if it["category"] == "Refund"})
     storage.update_transactions(changed)
     if body.remember and target["merchant"]:
-        storage.remember(target["merchant"], body.category)
+        storage.remember(learned_key(target["merchant"], Decimal(target["amount"])), body.category)
     return _payload(sid)
 
 

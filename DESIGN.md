@@ -60,7 +60,7 @@ A wrong guess is worse than asking, so these go to **Needs Review** with the rea
 ### Learning from the user
 
 When the user fixes a row, the app can apply the same category to the other *unsure* rows from that merchant, and
-remembers `merchant → category` in SQLite. The next statement uses it in layer 1. It never overwrites rows the brain
+remembers `merchant + direction (money in or out) → category` in SQLite, so filing a purchase never re-files a refund from the same shop. The next statement uses it in layer 1. It never overwrites rows the brain
 was already sure about.
 
 ## Reading messy statements (`backend/app/ingest/`)

@@ -35,3 +35,5 @@ export function fixTransaction(id: number, category: string, applyToSimilar = tr
 export const getCategories = () => request<Category[]>("/api/categories");
 
 export const exportUrl = (statementId: number) => `${API_URL}/api/statements/${statementId}/export.csv`;
+
+export const getStatement = (statementId: number) => request<StatementResult>(`/api/statements/${statementId}`);
